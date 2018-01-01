@@ -1,7 +1,7 @@
-<div class="content-container typography>">
+<div class="content container narrow-container">
 	<h1>$Title</h1>
-	
-	<div class="content">
+
+	<div class="main-content">
 		$Content
 
 		<h2><%t MemberProfiles.LOGINHEADER "Log in" %></h2>

@@ -150,8 +150,8 @@ class MemberProfilePageController extends PageController {
         );
 
 
-        if($form->hasExtension('FormSpamProtectionExtension')) {
-            $form->enableSpamProtection( );
+        if($form->hasExtension('SilverStripe\SpamProtection\Extension\FormSpamProtectionExtension')) {
+            $form->enableSpamProtection();
         }
         $this->extend('updateRegisterForm', $form);
         return $form;
@@ -529,6 +529,10 @@ class MemberProfilePageController extends PageController {
             $field->setTitle($profileField->Title);
             $field->setDescription($profileField->Note);
 
+            if ($profileField->MemberField == 'YearStarted') {
+                $field->setHTML5(true);
+            }
+
             if($context == 'Registration' && $profileField->DefaultValue) {
                 $field->setValue($profileField->DefaultValue);
             }
@@ -553,6 +557,21 @@ class MemberProfilePageController extends PageController {
 
             $fields->push($field);
         }
+
+        if($context == 'Profile') {
+            $member = Security::getCurrentUser();
+            if ($member && $avatar = $member->Avatar()) {
+                $fields->push(LiteralField::create(
+                    'AvatarPreview',
+                    '<img src="' . $avatar->Link() . '" class="avatar-uploaded-picture">'
+                )
+                );
+            }
+        }
+
+        $imageUploadField = FileField::create('Avatar', 'Avatar');
+        $imageUploadField->setFolderName('Avatars');
+        $fields->push($imageUploadField);
 
         $this->extend('updateProfileFields', $fields);
         return $fields;
